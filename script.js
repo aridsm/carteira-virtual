@@ -1,4 +1,22 @@
-const btnsChange = document.querySelectorAll('.btn-nav')
+const sectionsItens = document.querySelectorAll('.section_itens');
+btnsSection = document.querySelectorAll('.btns');
+console.log(sectionsItens)
+console.log(btnsSection)
+
+function changeSection(index) {
+    sectionsItens.forEach(item => item.classList.remove('ativo'))
+    sectionsItens[index].classList.add('ativo');
+}
+
+btnsSection.forEach((item, index) => {
+    item.addEventListener('click', () => {
+        changeSection(index)
+    })
+})
+
+
+
+/*const btnsChange = document.querySelectorAll('.btn-nav')
 const ctnChange = document.querySelectorAll('.change-item')
 
 function trocaCtn(index) {
@@ -20,8 +38,6 @@ btnsChange.forEach((item, index) => {
         trocaCtn(index)
     })
 })
-
-/****/
 
 const btnsAdd = document.querySelectorAll('.add')
 const btnsDeleteAll = document.querySelectorAll('.limpar')
@@ -222,3 +238,4 @@ window.addEventListener('DOMContentLoaded', () => {
 inputNumeros.forEach((i) => {
     i.addEventListener('keydown', preventKey)
 })
+*/

@@ -15,9 +15,10 @@
 
 <body>
     <section class="carteira-container">
+        <div class="alert green">Item adicionado</div>
         <header class="header">
             <h1>Carteira virtual</h1>
-            <p class="made-by">By <a href="https://github.com/aridsm">Ariane Morelato</a></p>
+            <p class="made-by"><a href="https://github.com/aridsm">By Ariane Morelato <img src="./github.svg" /></a></p>
         </header>
 
         <section class="itens">
@@ -25,7 +26,7 @@
                 <button class="btns" id="btn_1"> Adicionar receita ou despesa</button>
                 <button class="btns" id="btn_2">Historico de receitas e despesas</button>
             </div>
-            <section class="add_valor" aria-label="Histórico de lucros ou gastos">
+            <section class="add_valor section_itens ativo" aria-label="Histórico de lucros ou gastos">
                 <div class="add_valor_receitas">
                     <p class="title">Adicionar Receitas</p>
                     <input type="number" name="receita" id="receita" class="input-valor" placeholder="R$ 100,00">
@@ -39,11 +40,11 @@
                     <button class="add_btn">Adicionar</button>
                 </div>
             </section>
-            <section class="historico" aria-label="Histórico de lucros ou gastos">
+            <section class="historico section_itens" aria-label="Histórico de lucros ou gastos">
                 <div class="historico_receitas">
                     <p class="title">Historico de receitas</p>
                     <ul>
-                        <li>
+                        <li class="editing">
                             <label for="historico-income"></label>
                             <input type="text" name='historico-income' id="historico-income" placeholder="Dividas pagas" />
                             <div class="valor">
@@ -51,8 +52,19 @@
                                 <input type="text" name='historico-income-valor' id="historico-income-valor" placeholder="120,00" />
                             </div>
 
-                            <button title="Salvar alteraçoes"><img src="./pencil.svg" alt=""></button>
-                            <button title="Remover item"><img src="./trash.svg" alt=""></button>
+                            <div class="tooltip_container">
+                                <button><img src="./pencil.svg" alt=""></button>
+                                <span class="tooltip">
+                                    Editar item
+                                </span>
+                            </div>
+
+                            <div class="tooltip_container">
+                                <button><img src="./trash.svg" alt=""></button>
+                                <span class="tooltip">
+                                    Remover item
+                                </span>
+                            </div>
                         </li>
                         <li>
                             <label for="historico-income"></label>
@@ -62,8 +74,19 @@
                                 <input type="text" name='historico-income-valor' id="historico-income-valor" placeholder="15,00" />
                             </div>
 
-                            <button title="Salvar alteraçoes"><img src="./pencil.svg" alt=""></button>
-                            <button title="Remover item"><img src="./trash.svg" alt=""></button>
+                            <div class="tooltip_container">
+                                <button><img src="./pencil.svg" alt=""></button>
+                                <span class="tooltip">
+                                    Editar item
+                                </span>
+                            </div>
+
+                            <div class="tooltip_container">
+                                <button><img src="./trash.svg" alt=""></button>
+                                <span class="tooltip">
+                                    Remover item
+                                </span>
+                            </div>
                         </li>
                         <li>
                             <label for="historico-income"></label>
@@ -73,8 +96,20 @@
                                 <input type="text" name='historico-income-valor' id="historico-income-valor" placeholder="520,00" />
                             </div>
 
-                            <button title="Salvar alteraçoes"><img src="./pencil.svg" alt=""></button>
-                            <button title="Remover item"><img src="./trash.svg" alt=""></button>
+
+                            <div class="tooltip_container">
+                                <button><img src="./pencil.svg" alt=""></button>
+                                <span class="tooltip">
+                                    Editar item
+                                </span>
+                            </div>
+
+                            <div class="tooltip_container">
+                                <button><img src="./trash.svg" alt=""></button>
+                                <span class="tooltip">
+                                    Remover item
+                                </span>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -89,8 +124,20 @@
                                 <input type="text" name='historico-outcome-valor' id="historico-outcome-valor" placeholder="110,00" />
                             </div>
 
-                            <button title="Salvar alteraçoes"><img src="./pencil.svg" alt=""></button>
-                            <button title="Remover item"><img src="./trash.svg" alt=""></button>
+
+                            <div class="tooltip_container">
+                                <button><img src="./pencil.svg" alt=""></button>
+                                <span class="tooltip">
+                                    Editar item
+                                </span>
+                            </div>
+
+                            <div class="tooltip_container">
+                                <button><img src="./trash.svg" alt=""></button>
+                                <span class="tooltip">
+                                    Remover item
+                                </span>
+                            </div>
                         </li>
                         <li>
                             <label for="historico-outcome"></label>
@@ -100,8 +147,20 @@
                                 <input type="text" name='historico-outcome-valor' id="historico-outcome-valor" placeholder="30,00" />
                             </div>
 
-                            <button title="Salvar alteraçoes"><img src="./pencil.svg" alt=""></button>
-                            <button title="Remover item"><img src="./trash.svg" alt=""></button>
+
+                            <div class="tooltip_container">
+                                <button><img src="./pencil.svg" alt=""></button>
+                                <span class="tooltip">
+                                    Editar item
+                                </span>
+                            </div>
+
+                            <div class="tooltip_container">
+                                <button><img src="./trash.svg" alt=""></button>
+                                <span class="tooltip">
+                                    Remover item
+                                </span>
+                            </div>
                         </li>
                         <li>
                             <label for="historico-outcome"></label>
@@ -111,8 +170,20 @@
                                 <input type="text" name='historico-outcome-valor' id="historico-outcome-valor" placeholder="10,00" />
                             </div>
 
-                            <button title="Salvar alteraçoes"><img src="./pencil.svg" alt=""></button>
-                            <button title="Remover item"><img src="./trash.svg" alt=""></button>
+
+                            <div class="tooltip_container">
+                                <button><img src="./pencil.svg" alt=""></button>
+                                <span class="tooltip">
+                                    Editar item
+                                </span>
+                            </div>
+
+                            <div class="tooltip_container">
+                                <button><img src="./trash.svg" alt=""></button>
+                                <span class="tooltip">
+                                    Remover item
+                                </span>
+                            </div>
                         </li>
                     </ul>
                 </div>
