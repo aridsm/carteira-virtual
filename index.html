@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,102 +8,140 @@
     <title>Carteira virtual</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <section class="carteira-container">
-        <h1>Carteira virtual</h1>
-        <div class="carteira">
-            <div class="btns-container">
-                <button class="btn-nav ativo" title="Adicionar ganhos ou gastos" aria-pressed="true" aria-controls="add-delete"><i class="fa-solid fa-plus-minus"></i></button>
-                <button class="btn-nav" title="Visualizar histórico de despesas e gastos" aria-pressed="false" aria-controls="history"><i class="fa-solid fa-piggy-bank"></i></button>
-                <button class="btn-nav" title="Sua carteira" aria-pressed="false" aria-controls="budget"><i class="fa-solid fa-wallet"></i></button>
-            </div>
-            <div class="change-container">
-                <div class="add-delete change-item ativo" id="add-delete" aria-label="Adicionar lucros ou gastos">
-                    <div class="income">
-                            <div class="income-container">
-                                <p class="title">Receitas</p>
-                                <input type="number" name="receita" id="receita" class="input-valor" placeholder="Digite um valor" pattern="[0-9]">
-                                <input type="text" name="descricao-receita" id="descricao-receita" class="descricao" placeholder="Descrição">
-                                <button class="add">Adicionar</button>
-                            </div>                        
-                    </div>
-                    <div class="outcome">
-                            <div class="outcome-container">
-                                <p class="title">Despesas</p>
-                                <input type="number" name="despesa" id="despesa" class="input-valor" placeholder="Digite um valor">
-                                <input type="text" name="descricao-despesa" id="descricao-despesa" class="descricao" placeholder="Descrição">
-                                <button class="add">Adicionar</button>  
-                            </div>                       
-                    </div>
-                </div>
-                <div class="history change-item" id="history" aria-label="Histórico de lucros ou gastos">
-                    <div class="income">
-                        <div class="income-container">
-                            <div class="header-history">
-                                <p class="title">Receitas</p>
-                                <button class="limpar">Limpar tudo</button>
-                            </div>
-                            <ul class="itens-history" id="income-history">
-                                
-                            </ul>
-                        </div>
-                    </div>
+        <header class="header">
+            <h1>Carteira virtual</h1>
+            <p class="made-by">By <a href="https://github.com/aridsm">Ariane Morelato</a></p>
+        </header>
 
-                    <div class="outcome">
-                        <div class="outcome-container">
-                            <div class="header-history">
-                                    <p class="title">Despesas</p>
-                                    <button class="limpar">Limpar tudo</button>
+        <section class="itens">
+            <div class="btns_container">
+                <button class="btns" id="btn_1"> Adicionar receita ou despesa</button>
+                <button class="btns" id="btn_2">Historico de receitas e despesas</button>
+            </div>
+            <section class="add_valor" aria-label="Histórico de lucros ou gastos">
+                <div class="add_valor_receitas">
+                    <p class="title">Adicionar Receitas</p>
+                    <input type="number" name="receita" id="receita" class="input-valor" placeholder="R$ 100,00">
+                    <input type="text" name="descricao-receita" id="descricao-receita" class="descricao" placeholder="Descrição">
+                    <button class="add_btn">Adicionar</button>
+                </div>
+                <div class="add_valor_despesas">
+                    <p class="title">Adicionar Despesas</p>
+                    <input type="number" name="despesa" id="despesa" class="input-valor" placeholder="R$ 50,00">
+                    <input type="text" name="descricao-despesa" id="descricao-despesa" class="descricao" placeholder="Descrição">
+                    <button class="add_btn">Adicionar</button>
+                </div>
+            </section>
+            <section class="historico" aria-label="Histórico de lucros ou gastos">
+                <div class="historico_receitas">
+                    <p class="title">Historico de receitas</p>
+                    <ul>
+                        <li>
+                            <label for="historico-income"></label>
+                            <input type="text" name='historico-income' id="historico-income" placeholder="Dividas pagas" />
+                            <div class="valor">
+                                <span>R$</span>
+                                <input type="text" name='historico-income-valor' id="historico-income-valor" placeholder="120,00" />
                             </div>
-                            <ul class="itens-history" id="outcome-history">
-                                
-                            </ul>
-                        </div>                      
-                    </div>
+
+                            <button title="Salvar alteraçoes"><img src="./pencil.svg" alt=""></button>
+                            <button title="Remover item"><img src="./trash.svg" alt=""></button>
+                        </li>
+                        <li>
+                            <label for="historico-income"></label>
+                            <input type="text" name='historico-income' id="historico-income" placeholder="Dividas pagas" />
+                            <div class="valor">
+                                <span>R$</span>
+                                <input type="text" name='historico-income-valor' id="historico-income-valor" placeholder="15,00" />
+                            </div>
+
+                            <button title="Salvar alteraçoes"><img src="./pencil.svg" alt=""></button>
+                            <button title="Remover item"><img src="./trash.svg" alt=""></button>
+                        </li>
+                        <li>
+                            <label for="historico-income"></label>
+                            <input type="text" name='historico-income' id="historico-income" placeholder="Dividas pagas" />
+                            <div class="valor">
+                                <span>R$</span>
+                                <input type="text" name='historico-income-valor' id="historico-income-valor" placeholder="520,00" />
+                            </div>
+
+                            <button title="Salvar alteraçoes"><img src="./pencil.svg" alt=""></button>
+                            <button title="Remover item"><img src="./trash.svg" alt=""></button>
+                        </li>
+                    </ul>
                 </div>
-                <div class="budget change-item" id="budget" aria-label="Sua carteira">
-                    <div class="income">
-                        <div class="income-container">
-                            <p class="title">Total recebido</p>
-                            <div class="valor-total">
-                                R$
-                                <span class="valor" id="total-recebido">
-                                    0,00
-                                </span>
-                            </div>  
-                        </div>                       
-                    </div>
-                    <div class="outcome">
-                        <div class="outcome-container">
-                                <p class="title">Total gasto</p>
-                                <div class="valor-total">
-                                R$
-                                    <span class="valor" id="total-gasto">
-                                        0,00
-                                    </span>
-                                </div> 
-                        </div>                        
-                    </div>
+                <div class="historico_despesas">
+                    <p class="title">Historico de despesas</p>
+                    <ul>
+                        <li>
+                            <label for="historico-outcome"></label>
+                            <input type="text" name='historico-outcome' id="historico-outcome" placeholder="Agua" />
+                            <div class="valor">
+                                <span>R$</span>
+                                <input type="text" name='historico-outcome-valor' id="historico-outcome-valor" placeholder="110,00" />
+                            </div>
+
+                            <button title="Salvar alteraçoes"><img src="./pencil.svg" alt=""></button>
+                            <button title="Remover item"><img src="./trash.svg" alt=""></button>
+                        </li>
+                        <li>
+                            <label for="historico-outcome"></label>
+                            <input type="text" name='historico-outcome' id="historico-outcome" placeholder="Agua" />
+                            <div class="valor">
+                                <span>R$</span>
+                                <input type="text" name='historico-outcome-valor' id="historico-outcome-valor" placeholder="30,00" />
+                            </div>
+
+                            <button title="Salvar alteraçoes"><img src="./pencil.svg" alt=""></button>
+                            <button title="Remover item"><img src="./trash.svg" alt=""></button>
+                        </li>
+                        <li>
+                            <label for="historico-outcome"></label>
+                            <input type="text" name='historico-outcome' id="historico-outcome" placeholder="Agua" />
+                            <div class="valor">
+                                <span>R$</span>
+                                <input type="text" name='historico-outcome-valor' id="historico-outcome-valor" placeholder="10,00" />
+                            </div>
+
+                            <button title="Salvar alteraçoes"><img src="./pencil.svg" alt=""></button>
+                            <button title="Remover item"><img src="./trash.svg" alt=""></button>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </section>
+
+        <section class="carteira">
+            <div class="total">
+                <p class="title">Na carteira agora</p>
+                <div class="carteira_valor">
+                    R$ <span>00,00</span>
                 </div>
             </div>
-            <div class="total-na-carteira" aria-label="Total na carteira">
-                <div class="container-total">
-                    <p class="title">Na carteira agora:</p>
-                    <div class="valor-total">
-                        R$
-                        <span class="valor" id="valor-total">
-                            0,00                          
-                        </span>
-                    </div>
+            <div class="total_recebido">
+                <p class="title">Total recebido</p>
+                <div class="carteira_valor">
+                    R$ <span>00,00</span>
                 </div>
             </div>
-        </div>
+            <div class="total_gasto">
+                <p class="title">Total gasto</p>
+                <div class="carteira_valor">
+                    R$ <span>00,00</span>
+                </div>
+            </div>
+        </section>
+
     </section>
-    <p class="made-by">By <a href="https://github.com/aridsm">Ariane Morelato</a></p>
     <script src="script.js"></script>
 </body>
+
 </html>
