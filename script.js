@@ -14,31 +14,67 @@ btnsSection.forEach((item, index) => {
     })
 })
 
+const formDespesas = document.querySelector('.add_valor_despesas')
+const formReceitas = document.querySelector('.add_valor_receitas')
+const listaReceitas = document.querySelector('.lista-receitas')
 
-
-/*const btnsChange = document.querySelectorAll('.btn-nav')
-const ctnChange = document.querySelectorAll('.change-item')
-
-function trocaCtn(index) {
-    ctnChange.forEach((i) => {
-        i.classList.remove('ativo')
-    })
-    btnsChange.forEach((i) => {
-        i.classList.remove('ativo')
-        i.setAttribute('aria-pressed','false')
-    })
-    ctnChange[index].classList.add('ativo')
-    btnsChange[index].classList.add('ativo')
-    btnsChange[index].setAttribute('aria-pressed','true')
-
+function saveValue(e) {
+    e.preventDefault()
+    const inputMoney = e.currentTarget.querySelector('#receita').value;
+    const inputDescription = e.currentTarget.querySelector('#descricao-receita').value;
+    const objValues = {
+        value: inputMoney,
+        description: inputDescription
+    };
+    saveToLocalStorage(objValues)
+    createItem(objValues)
 }
 
-btnsChange.forEach((item, index) => {
-    item.addEventListener('click', () => {
-        trocaCtn(index)
-    })
-})
+function saveToLocalStorage({ value, description }) {
+    const newItem = { value, description };
+    let lista = localStorage.getItem('receitaLista') ? JSON.parse(localStorage.getItem('receitaLista')) : [];
+    lista.push(newItem)
+    localStorage.setItem('receitaLista', JSON.stringify(lista))
+}
 
+function createItem(item) {
+    const newLi = document.createElement('li')
+    const liContent = `
+<label for="historico-income"></label>
+<input type="text" name='historico-income' id="historico-income" placeholder="${item.description}" />
+<div class="valor">
+    <span>R$</span>
+    <input type="text" name='historico-income-valor' id="historico-income-valor" placeholder="${item.value}" title='${item.value}'/>
+</div>
+
+<div class="tooltip_container">
+    <button><img src="./pencil.svg" alt=""></button>
+    <span class="tooltip">
+        Editar item
+    </span>
+</div>
+
+<div class="tooltip_container">
+    <button><img src="./trash.svg" alt=""></button>
+    <span class="tooltip">
+        Remover item
+    </span>
+</div>`
+    newLi.innerHTML = liContent
+    listaReceitas.appendChild(newLi)
+    console.log(newLi)
+}
+
+/*
+function addLocalStorage(id, valor, descricao, nomeLista, funcao) {
+    const item = { id, valor, descricao }
+    let lista = funcao
+    lista.push(item)
+    localStorage.setItem(nomeLista, JSON.stringify(lista))
+}*/
+formReceitas.addEventListener('submit', saveValue)
+
+/*
 const btnsAdd = document.querySelectorAll('.add')
 const btnsDeleteAll = document.querySelectorAll('.limpar')
 const valorTotal = document.querySelector('#valor-total')

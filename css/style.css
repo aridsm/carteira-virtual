@@ -70,6 +70,28 @@ li {
     grid-template-rows: 15vh 85vh;
 }
 
+.carteira-container::before,
+.carteira-container::after {
+    content: '';
+    background: #FFC3F2;
+    display: block;
+    position: absolute;
+    width: 5rem;
+    height: 5rem;
+    filter: blur(80px);
+    -webkit-filter: blur(80px);
+}
+
+.carteira-container::before {
+    top: 10rem;
+    left: -1rem;
+}
+
+.carteira-container::after {
+    bottom: 0;
+    right: 0;
+}
+
 .header {
     grid-column: 1;
     grid-row: 1;
@@ -224,13 +246,23 @@ li {
     grid-row: 1 / -1;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    padding: 3rem;
+    grid-gap: 3rem;
+    padding: 5rem;
     place-items: center;
     text-align: center;
 }
 
 .total {
     grid-column: 1 / -1;
+}
+
+.total_recebido,
+.total_gasto {
+    border: 1px solid #85D9CA;
+    width: 100%;
+    border-radius: 5px;
+    padding: 2rem;
+    box-shadow: 0 0 50px 0 #3E3A59;
 }
 
 .carteira_valor {

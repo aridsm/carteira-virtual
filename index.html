@@ -27,24 +27,24 @@
                 <button class="btns" id="btn_2">Historico de receitas e despesas</button>
             </div>
             <section class="add_valor section_itens ativo" aria-label="Histórico de lucros ou gastos">
-                <div class="add_valor_receitas">
+                <form class="add_valor_receitas">
                     <p class="title">Adicionar Receitas</p>
-                    <input type="number" name="receita" id="receita" class="input-valor" placeholder="R$ 100,00">
-                    <input type="text" name="descricao-receita" id="descricao-receita" class="descricao" placeholder="Descrição">
+                    <input type="number" name="receita" id="receita" class="input-valor" placeholder="R$ 100,00" autocomplete="off">
+                    <input type="text" name="descricao-receita" id="descricao-receita" class="descricao" placeholder="Descrição" autocomplete="off">
                     <button class="add_btn">Adicionar</button>
-                </div>
-                <div class="add_valor_despesas">
+                </form>
+                <form class="add_valor_despesas">
                     <p class="title">Adicionar Despesas</p>
-                    <input type="number" name="despesa" id="despesa" class="input-valor" placeholder="R$ 50,00">
-                    <input type="text" name="descricao-despesa" id="descricao-despesa" class="descricao" placeholder="Descrição">
+                    <input type="number" name="despesa" id="despesa" class="input-valor" placeholder="R$ 50,00" autocomplete="off">
+                    <input type="text" name="descricao-despesa" id="descricao-despesa" class="descricao" placeholder="Descrição" autocomplete="off">
                     <button class="add_btn">Adicionar</button>
-                </div>
+                </form>
             </section>
             <section class="historico section_itens" aria-label="Histórico de lucros ou gastos">
                 <div class="historico_receitas">
                     <p class="title">Historico de receitas</p>
-                    <ul>
-                        <li class="editing">
+                    <ul class="lista-receitas">
+                        <!--   <li class="editing">
                             <label for="historico-income"></label>
                             <input type="text" name='historico-income' id="historico-income" placeholder="Dividas pagas" />
                             <div class="valor">
@@ -66,56 +66,13 @@
                                 </span>
                             </div>
                         </li>
-                        <li>
-                            <label for="historico-income"></label>
-                            <input type="text" name='historico-income' id="historico-income" placeholder="Dividas pagas" />
-                            <div class="valor">
-                                <span>R$</span>
-                                <input type="text" name='historico-income-valor' id="historico-income-valor" placeholder="15,00" />
-                            </div>
+                        -->
 
-                            <div class="tooltip_container">
-                                <button><img src="./pencil.svg" alt=""></button>
-                                <span class="tooltip">
-                                    Editar item
-                                </span>
-                            </div>
-
-                            <div class="tooltip_container">
-                                <button><img src="./trash.svg" alt=""></button>
-                                <span class="tooltip">
-                                    Remover item
-                                </span>
-                            </div>
-                        </li>
-                        <li>
-                            <label for="historico-income"></label>
-                            <input type="text" name='historico-income' id="historico-income" placeholder="Dividas pagas" />
-                            <div class="valor">
-                                <span>R$</span>
-                                <input type="text" name='historico-income-valor' id="historico-income-valor" placeholder="520,00" />
-                            </div>
-
-
-                            <div class="tooltip_container">
-                                <button><img src="./pencil.svg" alt=""></button>
-                                <span class="tooltip">
-                                    Editar item
-                                </span>
-                            </div>
-
-                            <div class="tooltip_container">
-                                <button><img src="./trash.svg" alt=""></button>
-                                <span class="tooltip">
-                                    Remover item
-                                </span>
-                            </div>
-                        </li>
                     </ul>
                 </div>
                 <div class="historico_despesas">
                     <p class="title">Historico de despesas</p>
-                    <ul>
+                    <ul class="lista-despesas">
                         <li>
                             <label for="historico-outcome"></label>
                             <input type="text" name='historico-outcome' id="historico-outcome" placeholder="Agua" />
