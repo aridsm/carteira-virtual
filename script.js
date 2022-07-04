@@ -17,24 +17,33 @@ btnsSection.forEach((item, index) => {
 const formDespesas = document.querySelector('.add_valor_despesas')
 const formReceitas = document.querySelector('.add_valor_receitas')
 const listaReceitas = document.querySelector('.lista-receitas')
+const alertItem = document.querySelector('.alert')
+let LISTA_RECEITAS = 'LISTA_RECEITAS';
+let LISTA_DESPESAS = 'LISTA_DESPESAS';
 
-function saveValue(e) {
+function saveValue(list, e) {
     e.preventDefault()
-    const inputMoney = e.currentTarget.querySelector('#receita').value;
-    const inputDescription = e.currentTarget.querySelector('#descricao-receita').value;
-    const objValues = {
+    const inputMoney = e.currentTarget.querySelector('.input-valor').value;
+    const inputDescription = e.currentTarget.querySelector('.descricao').value;
+    const date = new Date();
+    const id = date.getTime()
+    const itemData = {
         value: inputMoney,
-        description: inputDescription
+        description: inputDescription,
+        id: id
     };
-    saveToLocalStorage(objValues)
-    createItem(objValues)
+    saveToLocalStorage(itemData, list)
+    createItem(itemData)
 }
 
-function saveToLocalStorage({ value, description }) {
-    const newItem = { value, description };
-    let lista = localStorage.getItem('receitaLista') ? JSON.parse(localStorage.getItem('receitaLista')) : [];
-    lista.push(newItem)
-    localStorage.setItem('receitaLista', JSON.stringify(lista))
+function saveToLocalStorage(item, list) {
+    let lista = getList(list)
+    lista.push(item)
+    localStorage.setItem(list, JSON.stringify(lista))
+}
+
+function getList(list) {
+    return localStorage.getItem(list) ? JSON.parse(localStorage.getItem(list)) : [];
 }
 
 function createItem(item) {
@@ -61,10 +70,24 @@ function createItem(item) {
     </span>
 </div>`
     newLi.innerHTML = liContent
-    listaReceitas.appendChild(newLi)
-    console.log(newLi)
+    listaReceitas.appendChild(newLi);
+    alert('good')
 }
 
+function alert(type) {
+    alertItem.classList.add(type);
+    alertItem.style.display = 'block'
+    const timer = setTimeout(() => {
+        alertItem.style.display = 'none'
+    }, 2000);
+}
+
+formReceitas.addEventListener('submit', (e) => {
+    saveValue(LISTA_RECEITAS, e)
+})
+formDespesas.addEventListener('submit', (e) => {
+    saveValue(LISTA_DESPESAS, e)
+})
 /*
 function addLocalStorage(id, valor, descricao, nomeLista, funcao) {
     const item = { id, valor, descricao }
@@ -72,7 +95,6 @@ function addLocalStorage(id, valor, descricao, nomeLista, funcao) {
     lista.push(item)
     localStorage.setItem(nomeLista, JSON.stringify(lista))
 }*/
-formReceitas.addEventListener('submit', saveValue)
 
 /*
 const btnsAdd = document.querySelectorAll('.add')

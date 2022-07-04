@@ -312,8 +312,7 @@ li {
     background: rgba(133, 217, 202, 0.2);
     border-radius: 5px;
     width: max-content;
-    color: white;
-    backdrop-filter: blur(10px);
+    color: rgb(171, 247, 233);
     animation: tooltip .3s forwards;
 }
 
@@ -334,7 +333,7 @@ li {
 
 .alert {
     position: absolute;
-    top: 2rem;
+    top: 1rem;
     right: 0;
     left: 0;
     max-width: 20rem;
@@ -344,23 +343,30 @@ li {
     border-radius: 5px;
     border: 1px solid currentColor;
     backdrop-filter: blur(6px);
-    font-size: 1.2rem;
+    font-size: 1rem;
     display: none;
+    animation: alert .2s forwards;
 }
 
-.alert.red {
+@keyframes alert {
+    100% {
+        top: 2rem;
+    }
+}
+
+.alert.bad {
     color: rgb(255, 138, 123);
     background: rgba(255, 83, 83, 0.1);
 }
 
-.alert.yellow {
+.alert.attention {
     color: rgb(255, 224, 123);
     background: rgba(255, 238, 83, 0.1);
 }
 
-.alert.green {
-    color: rgb(182, 255, 123);
-    background: rgba(112, 255, 83, 0.1);
+.alert.good {
+    color: rgb(201, 255, 157);
+    background: rgba(172, 255, 155, 0.1);
 }
 
 .section_itens {
