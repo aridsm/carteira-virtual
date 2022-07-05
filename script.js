@@ -1,7 +1,5 @@
 const sectionsItens = document.querySelectorAll('.section_itens');
 btnsSection = document.querySelectorAll('.btns');
-console.log(sectionsItens)
-console.log(btnsSection)
 
 function changeSection(index) {
     sectionsItens.forEach(item => item.classList.remove('ativo'))
@@ -33,7 +31,7 @@ function saveValue(list, e) {
         id: id
     };
     saveToLocalStorage(itemData, list)
-    createItem(itemData)
+    createItem(itemData, id, list)
 }
 
 function saveToLocalStorage(item, list) {
@@ -42,40 +40,94 @@ function saveToLocalStorage(item, list) {
     localStorage.setItem(list, JSON.stringify(lista))
 }
 
+function editFromLocalStorage(value) {
+    console.log(value)
+}
+
 function getList(list) {
     return localStorage.getItem(list) ? JSON.parse(localStorage.getItem(list)) : [];
 }
 
-function createItem(item) {
+function editValues(e) {
+    const currentLi = e.currentTarget.parentElement.parentElement;
+    const inputs = currentLi.querySelectorAll('input')
+    currentLi.classList.toggle('editing')
+
+    inputs.forEach(input => {
+        if (input.hasAttribute('disabled')) {
+            input.removeAttribute('disabled')
+        } else {
+            input.setAttribute('disabled', '')
+        }
+        input.addEventListener('change', (e) => editFromLocalStorage(e))
+    })
+
+    //  return inputs.every(input => !input.hasAttribute('disabled')) ? alert('attention', 'Editando item...') : ''
+}
+
+function removeItem(id, list) {
+    let lista = getList(list)
+    lista = lista.filter(item => {
+        return item.id !== +id
+    })
+    localStorage.setItem(list, JSON.stringify(lista))
+    if (lista.length == 0) {
+        localStorage.removeItem(list)
+    }
+
+}
+/*
+function deleteItemFromStorage(id, funcao, nomeLista) {
+
+    let items = funcao
+    
+    items = items.filter(function(item){
+        return item.id !== +id
+    })
+
+    localStorage.setItem(nomeLista, JSON.stringify(items))
+    if (items.length == 0) {
+        localStorage.removeItem(nomeLista)
+    }
+}
+*/
+function createItem(item, id, list) {
     const newLi = document.createElement('li')
     const liContent = `
 <label for="historico-income"></label>
-<input type="text" name='historico-income' id="historico-income" placeholder="${item.description}" />
+<input type="text" name='historico-income' id="historico-income" placeholder="${item.description}" disabled />
 <div class="valor">
     <span>R$</span>
-    <input type="text" name='historico-income-valor' id="historico-income-valor" placeholder="${item.value}" title='${item.value}'/>
+    <input type="text" name='historico-income-valor' id="historico-income-valor" placeholder="${item.value}" title='${item.value}' disabled/>
 </div>
 
 <div class="tooltip_container">
-    <button><img src="./pencil.svg" alt=""></button>
+    <button class='btn-editar'><img src="./pencil.svg" alt=""></button>
     <span class="tooltip">
         Editar item
     </span>
 </div>
 
 <div class="tooltip_container">
-    <button><img src="./trash.svg" alt=""></button>
+    <button class='btn-remover'><img src="./trash.svg" alt=""></button>
     <span class="tooltip">
         Remover item
     </span>
 </div>`
-    newLi.innerHTML = liContent
+    newLi.innerHTML = liContent;
+    newLi.dataset.id = id
     listaReceitas.appendChild(newLi);
-    alert('good')
+
+    const btnEdit = newLi.querySelector('.btn-editar');
+    const btnRemove = newLi.querySelector('.btn-remover')
+    btnRemove.addEventListener('click', () => removeItem(id, list))
+    btnEdit.addEventListener('click', editValues);
+    alert('good', 'Item adicionado!')
 }
 
-function alert(type) {
-    alertItem.classList.add(type);
+function alert(type, text) {
+    alertItem.dataset.type = type
+    alertItem.innerText = text
     alertItem.style.display = 'block'
     const timer = setTimeout(() => {
         alertItem.style.display = 'none'
@@ -88,6 +140,7 @@ formReceitas.addEventListener('submit', (e) => {
 formDespesas.addEventListener('submit', (e) => {
     saveValue(LISTA_DESPESAS, e)
 })
+
 /*
 function addLocalStorage(id, valor, descricao, nomeLista, funcao) {
     const item = { id, valor, descricao }

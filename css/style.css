@@ -354,25 +354,28 @@ li {
     }
 }
 
-.alert.bad {
+.alert[data-type='bad'] {
     color: rgb(255, 138, 123);
     background: rgba(255, 83, 83, 0.1);
 }
 
-.alert.attention {
-    color: rgb(255, 224, 123);
-    background: rgba(255, 238, 83, 0.1);
+.alert[data-type='attention'] {
+    color: rgb(255, 239, 184);
+    background: rgba(255, 242, 128, 0.1);
 }
 
-.alert.good {
+.alert[data-type='good'] {
     color: rgb(201, 255, 157);
     background: rgba(172, 255, 155, 0.1);
 }
 
 .section_itens {
     display: none;
+    position: relative;
+    right: 0
 }
 
 .section_itens.ativo {
     display: block;
+    animation: tooltip .3s forwards;
 }
