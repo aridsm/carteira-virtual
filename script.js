@@ -14,30 +14,36 @@ btnsSection.forEach((item, index) => {
 
 const formDespesas = document.querySelector('.add_valor_despesas')
 const formReceitas = document.querySelector('.add_valor_receitas')
-const listaReceitas = document.querySelector('.lista-receitas')
+const historicoReceitas = document.querySelector('.lista-receitas')
+const historicoDespesas = document.querySelector('.lista-despesas')
 const alertItem = document.querySelector('.alert')
-let LISTA_RECEITAS = 'LISTA_RECEITAS';
-let LISTA_DESPESAS = 'LISTA_DESPESAS';
 
 function saveValue(list, e) {
-    e.preventDefault()
+    e.preventDefault();
     const inputMoney = e.currentTarget.querySelector('.input-valor').value;
-    const inputDescription = e.currentTarget.querySelector('.descricao').value;
-    const date = new Date();
-    const id = date.getTime()
-    const itemData = {
-        value: inputMoney,
-        description: inputDescription,
-        id: id
-    };
-    saveToLocalStorage(itemData, list)
-    createItem(itemData, id, list)
+    const inputDescription = e.currentTarget.querySelector('.descricao').value || 'Novo item';
+    if (inputMoney) {
+        const LIST_ID = list.dataset.list;
+        const date = new Date();
+        const ITEM_ID = date.getTime();
+        const itemData = {
+            value: inputMoney,
+            description: inputDescription,
+            id: ITEM_ID
+        };
+        saveToLocalStorage(itemData, LIST_ID);
+        createItem(itemData, list, LIST_ID)
+    } else {
+        alert('attention', 'Insira um valor.')
+    }
+
 }
 
-function saveToLocalStorage(item, list) {
-    let lista = getList(list)
-    lista.push(item)
-    localStorage.setItem(list, JSON.stringify(lista))
+function saveToLocalStorage(item, listName) {
+    let lista = getList(listName);
+    lista.push(item);
+    localStorage.setItem(listName, JSON.stringify(lista));
+    console.log(lista, listName)
 }
 
 function editFromLocalStorage(value) {
@@ -65,34 +71,23 @@ function editValues(e) {
     //  return inputs.every(input => !input.hasAttribute('disabled')) ? alert('attention', 'Editando item...') : ''
 }
 
-function removeItem(id, list) {
-    let lista = getList(list)
+function removeItem(id, li, listName) {
+    const ul = li.parentElement;
+    ul.removeChild(li);
+    if (!ul.children.length) ul.innerText = 'Nenhum item na lista.';
+
+    let lista = getList(listName);
     lista = lista.filter(item => {
         return item.id !== +id
-    })
-    localStorage.setItem(list, JSON.stringify(lista))
+    });
+    localStorage.setItem(listName, JSON.stringify(lista));
     if (lista.length == 0) {
-        localStorage.removeItem(list)
-    }
-
-}
-/*
-function deleteItemFromStorage(id, funcao, nomeLista) {
-
-    let items = funcao
-    
-    items = items.filter(function(item){
-        return item.id !== +id
-    })
-
-    localStorage.setItem(nomeLista, JSON.stringify(items))
-    if (items.length == 0) {
-        localStorage.removeItem(nomeLista)
+        localStorage.removeItem(listName);
     }
 }
-*/
-function createItem(item, id, list) {
-    const newLi = document.createElement('li')
+
+function createItem(item, list, listName) {
+    const newLi = document.createElement('li');
     const liContent = `
 <label for="historico-income"></label>
 <input type="text" name='historico-income' id="historico-income" placeholder="${item.description}" disabled />
@@ -113,16 +108,16 @@ function createItem(item, id, list) {
     <span class="tooltip">
         Remover item
     </span>
-</div>`
+</div>`;
     newLi.innerHTML = liContent;
-    newLi.dataset.id = id
-    listaReceitas.appendChild(newLi);
-
+    newLi.dataset.id = item.id;
+    //   list.innerText = '';
+    list.appendChild(newLi);
     const btnEdit = newLi.querySelector('.btn-editar');
-    const btnRemove = newLi.querySelector('.btn-remover')
-    btnRemove.addEventListener('click', () => removeItem(id, list))
+    const btnRemove = newLi.querySelector('.btn-remover');
+    btnRemove.addEventListener('click', () => removeItem(item.id, newLi, listName));
     btnEdit.addEventListener('click', editValues);
-    alert('good', 'Item adicionado!')
+    alert('good', 'Item adicionado!');
 }
 
 function alert(type, text) {
@@ -135,10 +130,10 @@ function alert(type, text) {
 }
 
 formReceitas.addEventListener('submit', (e) => {
-    saveValue(LISTA_RECEITAS, e)
+    saveValue(historicoReceitas, e)
 })
 formDespesas.addEventListener('submit', (e) => {
-    saveValue(LISTA_DESPESAS, e)
+    saveValue(historicoDespesas, e)
 })
 
 /*
