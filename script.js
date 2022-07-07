@@ -17,6 +17,13 @@ const formReceitas = document.querySelector('.add_valor_receitas')
 const historicoReceitas = document.querySelector('.lista-receitas')
 const historicoDespesas = document.querySelector('.lista-despesas')
 const alertItem = document.querySelector('.alert')
+const total = document.querySelector('.total span')
+const total_revenue = document.querySelector('.total_recebido span')
+const total_expense = document.querySelector('.total_gasto span')
+const btnsRemoverTudo = document.querySelectorAll('.remover-tudo')
+let TOTAL_VALUE = 0;
+let TOTAL_REVENUE_VALUE = 0;
+let TOTAL_EXPENSE_VALUE = 0;
 
 function saveValue(list, e) {
     e.preventDefault();
@@ -32,9 +39,10 @@ function saveValue(list, e) {
             id: ITEM_ID
         };
         saveToLocalStorage(itemData, LIST_ID);
-        createItem(itemData, list, LIST_ID)
+        createItem(itemData, list, LIST_ID);
+        alert('good', 'Item adicionado!');
     } else {
-        alert('attention', 'Insira um valor.')
+        alert('attention', 'Insira um valor.');
     }
 
 }
@@ -43,39 +51,54 @@ function saveToLocalStorage(item, listName) {
     let lista = getList(listName);
     lista.push(item);
     localStorage.setItem(listName, JSON.stringify(lista));
-    console.log(lista, listName)
 }
 
-function editFromLocalStorage(value) {
-    console.log(value)
+function editFromLocalStorage(li, listName, id) {
+    let lista = getList(listName);
+
+    lista.filter(item => item.id === id)
+    const item_editing = lista.filter(item => item.id === id)
+    const type = li.dataset.category
+    item_editing[0][type] = li.value
+
+    localStorage.setItem(listName, JSON.stringify(lista));
+
 }
 
-function getList(list) {
-    return localStorage.getItem(list) ? JSON.parse(localStorage.getItem(list)) : [];
+function getList(listName) {
+    return localStorage.getItem(listName) ? JSON.parse(localStorage.getItem(listName)) : [];
 }
 
-function editValues(e) {
-    const currentLi = e.currentTarget.parentElement.parentElement;
-    const inputs = currentLi.querySelectorAll('input')
-    currentLi.classList.toggle('editing')
+function editValues(input, listName, id) {
+    const previousValue = input.getAttribute('placeholder');
 
-    inputs.forEach(input => {
-        if (input.hasAttribute('disabled')) {
-            input.removeAttribute('disabled')
-        } else {
-            input.setAttribute('disabled', '')
-        }
-        input.addEventListener('change', (e) => editFromLocalStorage(e))
-    })
+    if (input.dataset.category === 'value') {
+        removeFromTotal(listName, previousValue);
+        sumTotal(listName, input.value);
+    }
 
-    //  return inputs.every(input => !input.hasAttribute('disabled')) ? alert('attention', 'Editando item...') : ''
+    editFromLocalStorage(input, listName, id);
+    input.setAttribute('placeholder', input.value);
+    input.setAttribute('title', input.value);
+    alert('attention', 'Item editado!');
 }
 
-function removeItem(id, li, listName) {
+function removeItem(li, listName) {
     const ul = li.parentElement;
     ul.removeChild(li);
-    if (!ul.children.length) ul.innerText = 'Nenhum item na lista.';
+    if (ul.children.length == 1) {
+        const paragraph = ul.querySelector('p')
+        paragraph.style.display = 'block'
+    };
+    removeFromLocalStorage(li.dataset.id, listName);
+    const inputDescription = li.querySelector(`#description-${li.dataset.id}`).value;
+    const inputValue = li.querySelector(`#value-${li.dataset.id}`).value;
+    removeFromTotal(listName, inputValue);
 
+    alert('bad', `Item "${inputDescription}" removido`);
+}
+
+function removeFromLocalStorage(id, listName) {
     let lista = getList(listName);
     lista = lista.filter(item => {
         return item.id !== +id
@@ -87,20 +110,15 @@ function removeItem(id, li, listName) {
 }
 
 function createItem(item, list, listName) {
+
     const newLi = document.createElement('li');
     const liContent = `
-<label for="historico-income"></label>
-<input type="text" name='historico-income' id="historico-income" placeholder="${item.description}" disabled />
+<label for="description-${item.id}">Descriçao do item</label>
+<input type="text" name='historico-income' id="description-${item.id}" placeholder="${item.description}" title="${item.description}" data-category='description' autocomplete='off' value="${item.description}"/>
 <div class="valor">
+    <label for="value-${item.id}">Descriçao do item</label>
     <span>R$</span>
-    <input type="text" name='historico-income-valor' id="historico-income-valor" placeholder="${item.value}" title='${item.value}' disabled/>
-</div>
-
-<div class="tooltip_container">
-    <button class='btn-editar'><img src="./pencil.svg" alt=""></button>
-    <span class="tooltip">
-        Editar item
-    </span>
+    <input type="text" name='historico-income-valor' id="value-${item.id}" placeholder="${item.value}" title='${item.value}' data-category='value' autocomplete='off' value="${item.value}" />
 </div>
 
 <div class="tooltip_container">
@@ -111,22 +129,70 @@ function createItem(item, list, listName) {
 </div>`;
     newLi.innerHTML = liContent;
     newLi.dataset.id = item.id;
-    //   list.innerText = '';
+    const paragraph = list.querySelector('p');
+    paragraph.style.display = 'none';
     list.appendChild(newLi);
-    const btnEdit = newLi.querySelector('.btn-editar');
     const btnRemove = newLi.querySelector('.btn-remover');
-    btnRemove.addEventListener('click', () => removeItem(item.id, newLi, listName));
-    btnEdit.addEventListener('click', editValues);
-    alert('good', 'Item adicionado!');
+    const inputs = newLi.querySelectorAll('input');
+    btnRemove.addEventListener('click', () => removeItem(newLi, listName));
+    inputs.forEach(input => {
+        input.addEventListener('change', (e) => editValues(e.currentTarget, listName, item.id));
+    })
+    sumTotal(listName, item.value);
+}
+
+function sumTotal(listName, value) {
+
+    if (listName === 'LISTA_RECEITAS') {
+        TOTAL_VALUE += +value;
+        TOTAL_REVENUE_VALUE += +value;
+    } else if (listName === 'LISTA_DESPESAS') {
+        TOTAL_VALUE -= value;
+        TOTAL_EXPENSE_VALUE += +value
+    }
+
+    total_revenue.innerText = TOTAL_REVENUE_VALUE;
+    total_expense.innerText = TOTAL_EXPENSE_VALUE;
+    total.innerText = TOTAL_VALUE;
+}
+
+function removeFromTotal(listName, itemValue) {
+
+    if (listName === 'LISTA_RECEITAS') {
+        TOTAL_VALUE -= +itemValue;
+        TOTAL_REVENUE_VALUE -= +itemValue
+    } else if (listName === 'LISTA_DESPESAS') {
+        TOTAL_VALUE += +itemValue;
+        TOTAL_EXPENSE_VALUE -= +itemValue;
+    }
+
+    total_revenue.innerText = TOTAL_REVENUE_VALUE;
+    total_expense.innerText = TOTAL_EXPENSE_VALUE;
+    total.innerText = TOTAL_VALUE;
 }
 
 function alert(type, text) {
-    alertItem.dataset.type = type
-    alertItem.innerText = text
-    alertItem.style.display = 'block'
+    alertItem.dataset.type = type;
+    alertItem.innerText = text;
+    alertItem.style.display = 'block';
     const timer = setTimeout(() => {
-        alertItem.style.display = 'none'
+        alertItem.style.display = 'none';
     }, 2000);
+}
+
+function loadStorageData(list) {
+    let lista = getList(list.dataset.list);
+    lista.forEach(item => {
+        createItem(item, list, list.dataset.list)
+    })
+}
+
+function removeAll(e) {
+    const listaHistorico = e.currentTarget.parentElement.parentElement;
+    const itemLista = listaHistorico.querySelectorAll('li');
+    const listName = listaHistorico.querySelector('ul').dataset.list;
+    itemLista.forEach(li => removeItem(li, listName));
+    alert('bad', 'Todos os itens foram removidos.')
 }
 
 formReceitas.addEventListener('submit', (e) => {
@@ -135,6 +201,24 @@ formReceitas.addEventListener('submit', (e) => {
 formDespesas.addEventListener('submit', (e) => {
     saveValue(historicoDespesas, e)
 })
+
+btnsRemoverTudo.forEach(btn => btn.addEventListener('click', removeAll))
+
+window.addEventListener('DOMContentLoaded', () => {
+    loadStorageData(historicoReceitas)
+    loadStorageData(historicoDespesas)
+})
+
+/*
+function setUpItens(funcao, ul) {
+    let itens = funcao
+    if (itens.length > 0) {
+        itens.forEach((i) => {
+            createLi(i.id, ul, i.valor, i.descricao)
+        })
+    }
+}
+ */
 
 /*
 function addLocalStorage(id, valor, descricao, nomeLista, funcao) {
