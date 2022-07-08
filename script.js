@@ -16,18 +16,22 @@ const formDespesas = document.querySelector('.add_valor_despesas')
 const formReceitas = document.querySelector('.add_valor_receitas')
 const historicoReceitas = document.querySelector('.lista-receitas')
 const historicoDespesas = document.querySelector('.lista-despesas')
+const inputsNumber = document.querySelectorAll('.input-valor')
 const alertItem = document.querySelector('.alert')
 const total = document.querySelector('.total span')
 const total_revenue = document.querySelector('.total_recebido span')
 const total_expense = document.querySelector('.total_gasto span')
 const btnsRemoverTudo = document.querySelectorAll('.remover-tudo')
-let TOTAL_VALUE = 0;
-let TOTAL_REVENUE_VALUE = 0;
-let TOTAL_EXPENSE_VALUE = 0;
+const BUDGET = {
+    total: 0,
+    revenue: 0,
+    expense: 0
+}
 
 function saveValue(list, e) {
     e.preventDefault();
-    const inputMoney = e.currentTarget.querySelector('.input-valor').value;
+    const inputMoney = e.currentTarget.querySelector('.input-valor').value.replace(',', '.');
+    console.log(inputMoney)
     const inputDescription = e.currentTarget.querySelector('.descricao').value || 'Novo item';
     if (inputMoney) {
         const LIST_ID = list.dataset.list;
@@ -70,15 +74,15 @@ function getList(listName) {
 }
 
 function editValues(input, listName, id) {
-    const previousValue = input.getAttribute('placeholder');
-
+    const previousValue = input.getAttribute('data-value');
+    console.log(input.value.replace(',', '.'))
     if (input.dataset.category === 'value') {
         removeFromTotal(listName, previousValue);
         sumTotal(listName, input.value);
     }
 
     editFromLocalStorage(input, listName, id);
-    input.setAttribute('placeholder', input.value);
+    input.setAttribute('data-value', input.value);
     input.setAttribute('title', input.value);
     alert('attention', 'Item editado!');
 }
@@ -90,9 +94,10 @@ function removeItem(li, listName) {
         const paragraph = ul.querySelector('p')
         paragraph.style.display = 'block'
     };
-    removeFromLocalStorage(li.dataset.id, listName);
-    const inputDescription = li.querySelector(`#description-${li.dataset.id}`).value;
-    const inputValue = li.querySelector(`#value-${li.dataset.id}`).value;
+    const id = li.dataset.id;
+    const inputDescription = li.querySelector(`#description-${id}`).value;
+    const inputValue = li.querySelector(`#value-${id}`).value.replace(',', '.');
+    removeFromLocalStorage(id, listName);
     removeFromTotal(listName, inputValue);
 
     alert('bad', `Item "${inputDescription}" removido`);
@@ -114,11 +119,11 @@ function createItem(item, list, listName) {
     const newLi = document.createElement('li');
     const liContent = `
 <label for="description-${item.id}">Descriçao do item</label>
-<input type="text" name='historico-income' id="description-${item.id}" placeholder="${item.description}" title="${item.description}" data-category='description' autocomplete='off' value="${item.description}"/>
+<input type="text" name='historico-income' id="description-${item.id}" data-value="${item.description}" title="${item.description}" data-category='description' autocomplete='off' value="${item.description}"/>
 <div class="valor">
     <label for="value-${item.id}">Descriçao do item</label>
     <span>R$</span>
-    <input type="text" name='historico-income-valor' id="value-${item.id}" placeholder="${item.value}" title='${item.value}' data-category='value' autocomplete='off' value="${item.value}" />
+    <input type="text" inputmode=”numeric” name='historico-income-valor' id="value-${item.id}" data-value="${item.value}" title='${fixValue(+item.value)}' data-category='value' autocomplete='off' value="${fixValue(+item.value)}" />
 </div>
 
 <div class="tooltip_container">
@@ -134,41 +139,46 @@ function createItem(item, list, listName) {
     list.appendChild(newLi);
     const btnRemove = newLi.querySelector('.btn-remover');
     const inputs = newLi.querySelectorAll('input');
+    const inputValor = newLi.querySelector('.valor input');
     btnRemove.addEventListener('click', () => removeItem(newLi, listName));
     inputs.forEach(input => {
         input.addEventListener('change', (e) => editValues(e.currentTarget, listName, item.id));
     })
+    inputValor.addEventListener('keyup', checkIfNumber)
     sumTotal(listName, item.value);
 }
 
 function sumTotal(listName, value) {
 
     if (listName === 'LISTA_RECEITAS') {
-        TOTAL_VALUE += +value;
-        TOTAL_REVENUE_VALUE += +value;
+        BUDGET.total += +value;
+        BUDGET.revenue += +value
     } else if (listName === 'LISTA_DESPESAS') {
-        TOTAL_VALUE -= value;
-        TOTAL_EXPENSE_VALUE += +value
+        BUDGET.total -= value;
+        BUDGET.expense += +value
     }
 
-    total_revenue.innerText = TOTAL_REVENUE_VALUE;
-    total_expense.innerText = TOTAL_EXPENSE_VALUE;
-    total.innerText = TOTAL_VALUE;
+    total_revenue.innerText = fixValue(BUDGET.revenue);
+    total_expense.innerText = fixValue(BUDGET.expense);
+    total.innerText = fixValue(BUDGET.total);
+}
+
+function fixValue(value) {
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }).substring(3)
 }
 
 function removeFromTotal(listName, itemValue) {
 
     if (listName === 'LISTA_RECEITAS') {
-        TOTAL_VALUE -= +itemValue;
-        TOTAL_REVENUE_VALUE -= +itemValue
+        BUDGET.total -= +itemValue;
+        BUDGET.revenue -= +itemValue
     } else if (listName === 'LISTA_DESPESAS') {
-        TOTAL_VALUE += +itemValue;
-        TOTAL_EXPENSE_VALUE -= +itemValue;
+        BUDGET.total += +itemValue;
+        BUDGET.expense -= +itemValue;
     }
-
-    total_revenue.innerText = TOTAL_REVENUE_VALUE;
-    total_expense.innerText = TOTAL_EXPENSE_VALUE;
-    total.innerText = TOTAL_VALUE;
+    total_revenue.innerText = fixValue(BUDGET.revenue);
+    total_expense.innerText = fixValue(BUDGET.expense);
+    total.innerText = fixValue(BUDGET.total);
 }
 
 function alert(type, text) {
@@ -191,8 +201,12 @@ function removeAll(e) {
     const listaHistorico = e.currentTarget.parentElement.parentElement;
     const itemLista = listaHistorico.querySelectorAll('li');
     const listName = listaHistorico.querySelector('ul').dataset.list;
+    if (!itemLista) {
+        alert('bad', 'Todos os itens foram removidos.');
+    } else {
+        alert('attention', 'Esta lista não possui itens.');
+    }
     itemLista.forEach(li => removeItem(li, listName));
-    alert('bad', 'Todos os itens foram removidos.')
 }
 
 formReceitas.addEventListener('submit', (e) => {
@@ -200,6 +214,22 @@ formReceitas.addEventListener('submit', (e) => {
 })
 formDespesas.addEventListener('submit', (e) => {
     saveValue(historicoDespesas, e)
+})
+
+function checkIfNumber(e) {
+    const regex = /\d|,/;
+    if (!regex.test(e.key) && e.keyCode !== 8) { e.preventDefault(); }
+    //  if (e.currentTarget.value.indexOf(',')) { e.preventDefault(); }
+    console.log(!regex.test(e.key) && e.keyCode !== 8)
+}
+
+function getPreviousInputValue(e) {
+    console.log(e.currentTarget.value)
+}
+
+inputsNumber.forEach(input => {
+    // input.addEventListener('keyup', getPreviousInputValue);
+    //  input.addEventListener('keydown', checkIfNumber)
 })
 
 btnsRemoverTudo.forEach(btn => btn.addEventListener('click', removeAll))
