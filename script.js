@@ -32,7 +32,6 @@ const BUDGET = {
 function saveValue(list, e) {
     e.preventDefault();
     const inputMoney = e.currentTarget.querySelector('.input-valor').value.replace(',', '.');
-    console.log(inputMoney)
     const inputDescription = e.currentTarget.querySelector('.descricao').value || 'Novo item';
     if (inputMoney) {
         const LIST_ID = list.dataset.list;
@@ -58,14 +57,12 @@ function saveToLocalStorage(item, listName) {
     localStorage.setItem(listName, JSON.stringify(lista));
 }
 
-function editFromLocalStorage(li, listName, id) {
+function editFromLocalStorage(input, listName, id) {
+
     let lista = getList(listName);
-
-    lista.filter(item => item.id === id)
-    const item_editing = lista.filter(item => item.id === id)
-    const type = li.dataset.category
-    item_editing[0][type] = li.value
-
+    const item_editing = lista.filter(item => item.id === id);
+    const type = input.dataset.category;
+    item_editing[0][type] = normalizeValue(input.value);
     localStorage.setItem(listName, JSON.stringify(lista));
 
 }
@@ -76,15 +73,17 @@ function getList(listName) {
 
 function editValues(input, listName, id) {
     const previousValue = input.getAttribute('data-value');
-    console.log(input.value.replace(',', '.'))
     if (input.dataset.category === 'value') {
-        removeFromTotal(listName, previousValue);
-        sumTotal(listName, input.value);
+        removeFromTotal(listName, normalizeValue(previousValue));
+        sumTotal(listName, normalizeValue(input.value));
     }
 
+    function updateAttributes(...attrs) {
+        attrs.map(attr => input.setAttribute(attr, input.value))
+    }
+
+    updateAttributes('data-value', 'value', 'title');
     editFromLocalStorage(input, listName, id);
-    input.setAttribute('data-value', input.value);
-    input.setAttribute('title', input.value);
     alert('attention', 'Item editado!');
 }
 
@@ -145,18 +144,20 @@ function createItem(item, list, listName) {
     inputs.forEach(input => {
         input.addEventListener('change', (e) => editValues(e.currentTarget, listName, item.id));
     })
-    inputValor.addEventListener('keyup', checkIfNumber)
+    inputValor.addEventListener('keydown', checkIfNumber);
     sumTotal(listName, item.value);
 }
 
-function sumTotal(listName, value) {
-
+/* juntar funçoes sumTotal e removeFrom total */
+/* arrumar conversao de medidas (numero para real e vice-versa)*/
+function sumTotal(listName, itemValue) {
+    let value = +itemValue
     if (listName === 'LISTA_RECEITAS') {
-        BUDGET.total += +value;
-        BUDGET.revenue += +value
+        BUDGET.total += value; //BUDGET.total = BUDGET.total + value
+        BUDGET.revenue += value
     } else if (listName === 'LISTA_DESPESAS') {
-        BUDGET.total -= value;
-        BUDGET.expense += +value
+        BUDGET.total -= value;//BUDGET.total = BUDGET.total + value
+        BUDGET.expense += value
     }
 
     total_revenue.innerText = fixValue(BUDGET.revenue);
@@ -164,9 +165,6 @@ function sumTotal(listName, value) {
     total.innerText = fixValue(BUDGET.total);
 }
 
-function fixValue(value) {
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }).substring(3)
-}
 
 function removeFromTotal(listName, itemValue) {
 
@@ -180,6 +178,14 @@ function removeFromTotal(listName, itemValue) {
     total_revenue.innerText = fixValue(BUDGET.revenue);
     total_expense.innerText = fixValue(BUDGET.expense);
     total.innerText = fixValue(BUDGET.total);
+}
+
+function fixValue(value) {
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }).substring(3)
+}
+
+function normalizeValue(value) {
+    return value.replaceAll('.', '').replace(',', '.')
 }
 
 function alert(type, text) {
@@ -203,12 +209,12 @@ function removeAll(e) {
     const listaHistorico = e.currentTarget.parentElement.parentElement;
     const itemLista = listaHistorico.querySelectorAll('li');
     const listName = listaHistorico.querySelector('ul').dataset.list;
-    if (!itemLista) {
-        alert('bad', 'Todos os itens foram removidos.');
-    } else {
-        alert('attention', 'Esta lista não possui itens.');
-    }
     itemLista.forEach(li => removeItem(li, listName));
+    if (!itemLista.length) {
+        alert('attention', 'Esta lista não possui itens.');
+    } else {
+        alert('bad', 'A lista foi esvaziada.');
+    }
 }
 
 formReceitas.addEventListener('submit', (e) => {
@@ -223,17 +229,19 @@ function checkIfNumber(e) {
     const currentInputValue = e.currentTarget.value + e.key;
     const keysNotAllowed = [8, 37, 38, 39, 40];
 
-    function isKeyCodeNotAllowed(keyCode, ...keys) {
-        return keys.every(key => keyCode !== key)
+    function isKeyForbidden() {
+        return (!regex.test(e.key) && keysNotAllowed.every(key => e.keyCode !== key))
     }
 
-    function isKeyForbidden() {
-        return !regex.test(e.key) && keysNotAllowed.every(key => e.keyCode !== key)
+    function commaAlreadyExists() {
+        return currentInputValue.split(',').length - 1 > 1
     }
-    console.log(keysNotAllowed.every(key => e.keyCode !== key))
-    if (isKeyForbidden) { e.preventDefault(); }
-    if (currentInputValue.split(',').length - 1 > 1) { e.preventDefault(); }
-    if (currentInputValue.indexOf(',') === 0) { e.preventDefault() }
+
+    function isCommaFirstChar() {
+        return currentInputValue.indexOf(',') === 0
+    }
+
+    if (isKeyForbidden() || commaAlreadyExists() || isCommaFirstChar()) { e.preventDefault() }
 }
 
 
