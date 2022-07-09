@@ -22,6 +22,7 @@ const total = document.querySelector('.total span')
 const total_revenue = document.querySelector('.total_recebido span')
 const total_expense = document.querySelector('.total_gasto span')
 const btnsRemoverTudo = document.querySelectorAll('.remover-tudo')
+let timer;
 const BUDGET = {
     total: 0,
     revenue: 0,
@@ -182,10 +183,11 @@ function removeFromTotal(listName, itemValue) {
 }
 
 function alert(type, text) {
+    clearTimeout(timer)
     alertItem.dataset.type = type;
     alertItem.innerText = text;
     alertItem.style.display = 'block';
-    const timer = setTimeout(() => {
+    timer = setTimeout(() => {
         alertItem.style.display = 'none';
     }, 2000);
 }
@@ -218,18 +220,25 @@ formDespesas.addEventListener('submit', (e) => {
 
 function checkIfNumber(e) {
     const regex = /\d|,/;
-    if (!regex.test(e.key) && e.keyCode !== 8) { e.preventDefault(); }
-    //  if (e.currentTarget.value.indexOf(',')) { e.preventDefault(); }
-    console.log(!regex.test(e.key) && e.keyCode !== 8)
+    const currentInputValue = e.currentTarget.value + e.key;
+    const keysNotAllowed = [8, 37, 38, 39, 40];
+
+    function isKeyCodeNotAllowed(keyCode, ...keys) {
+        return keys.every(key => keyCode !== key)
+    }
+
+    function isKeyForbidden() {
+        return !regex.test(e.key) && keysNotAllowed.every(key => e.keyCode !== key)
+    }
+    console.log(keysNotAllowed.every(key => e.keyCode !== key))
+    if (isKeyForbidden) { e.preventDefault(); }
+    if (currentInputValue.split(',').length - 1 > 1) { e.preventDefault(); }
+    if (currentInputValue.indexOf(',') === 0) { e.preventDefault() }
 }
 
-function getPreviousInputValue(e) {
-    console.log(e.currentTarget.value)
-}
 
 inputsNumber.forEach(input => {
-    // input.addEventListener('keyup', getPreviousInputValue);
-    //  input.addEventListener('keydown', checkIfNumber)
+    input.addEventListener('keydown', checkIfNumber)
 })
 
 btnsRemoverTudo.forEach(btn => btn.addEventListener('click', removeAll))
