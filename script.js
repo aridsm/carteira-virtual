@@ -62,9 +62,8 @@ function editFromLocalStorage(input, listName, id) {
     let lista = getList(listName);
     const item_editing = lista.filter(item => item.id === id);
     const type = input.dataset.category;
-    item_editing[0][type] = normalizeValue(input.value);
+    item_editing[0][type] = input.value;
     localStorage.setItem(listName, JSON.stringify(lista));
-
 }
 
 function getList(listName) {
@@ -72,17 +71,21 @@ function getList(listName) {
 }
 
 function editValues(input, listName, id) {
-    const previousValue = input.getAttribute('data-value');
+    let previousValue = input.getAttribute('data-value');
     if (input.dataset.category === 'value') {
-        removeFromTotal(listName, normalizeValue(previousValue));
-        sumTotal(listName, normalizeValue(input.value));
+        if (listName === 'LISTA_RECEITAS') {
+            calculateTotal(listName, -previousValue);
+            calculateTotal(listName, input.value);
+        } else {
+            calculateTotal(listName, previousValue);
+            calculateTotal(listName, -input.value);
+        }
     }
-
     function updateAttributes(...attrs) {
         attrs.map(attr => input.setAttribute(attr, input.value))
     }
-
-    updateAttributes('data-value', 'value', 'title');
+    input.setAttribute('title', toCurrency(+input.value))
+    updateAttributes('data-value', 'value');
     editFromLocalStorage(input, listName, id);
     alert('attention', 'Item editado!');
 }
@@ -96,11 +99,10 @@ function removeItem(li, listName) {
     };
     const id = li.dataset.id;
     const inputDescription = li.querySelector(`#description-${id}`).value;
-    const inputValue = li.querySelector(`#value-${id}`).value.replace(',', '.');
+    const inputValue = li.querySelector(`#value-${id}`).value;
     removeFromLocalStorage(id, listName);
-    removeFromTotal(listName, inputValue);
-
     alert('bad', `Item "${inputDescription}" removido`);
+    listName === 'LISTA_RECEITAS' ? calculateTotal(listName, -inputValue) : calculateTotal(listName, inputValue);
 }
 
 function removeFromLocalStorage(id, listName) {
@@ -123,7 +125,7 @@ function createItem(item, list, listName) {
 <div class="valor">
     <label for="value-${item.id}">Descriçao do item</label>
     <span>R$</span>
-    <input type="text" inputmode=”numeric” name='historico-income-valor' id="value-${item.id}" data-value="${item.value}" title='${fixValue(+item.value)}' data-category='value' autocomplete='off' value="${fixValue(+item.value)}" />
+    <input type="text" inputmode=”numeric” name='historico-income-valor' id="value-${item.id}" data-value="${item.value}" title='${toCurrency(+item.value)}' data-category='value' autocomplete='off' value="${fixValue(+item.value)}" />
 </div>
 
 <div class="tooltip_container">
@@ -145,47 +147,35 @@ function createItem(item, list, listName) {
         input.addEventListener('change', (e) => editValues(e.currentTarget, listName, item.id));
     })
     inputValor.addEventListener('keydown', checkIfNumber);
-    sumTotal(listName, item.value);
+    listName === 'LISTA_RECEITAS' ? calculateTotal(listName, item.value) : calculateTotal(listName, -item.value)
 }
 
-/* juntar funçoes sumTotal e removeFrom total */
-/* arrumar conversao de medidas (numero para real e vice-versa)*/
-function sumTotal(listName, itemValue) {
-    let value = +itemValue
+function calculateTotal(listName, itemValue) {
+    let value = Number(itemValue);
     if (listName === 'LISTA_RECEITAS') {
-        BUDGET.total += value; //BUDGET.total = BUDGET.total + value
-        BUDGET.revenue += value
+        BUDGET.total = BUDGET.total + value
+        BUDGET.revenue = BUDGET.revenue + value
     } else if (listName === 'LISTA_DESPESAS') {
-        BUDGET.total -= value;//BUDGET.total = BUDGET.total + value
-        BUDGET.expense += value
+        BUDGET.total = BUDGET.total + value
+        BUDGET.expense = BUDGET.expense + value
     }
 
-    total_revenue.innerText = fixValue(BUDGET.revenue);
-    total_expense.innerText = fixValue(BUDGET.expense);
-    total.innerText = fixValue(BUDGET.total);
+    updateTotalValue(total, BUDGET.total);
+    updateTotalValue(total_expense, BUDGET.expense);
+    updateTotalValue(total_revenue, BUDGET.revenue);
 }
 
-
-function removeFromTotal(listName, itemValue) {
-
-    if (listName === 'LISTA_RECEITAS') {
-        BUDGET.total -= +itemValue;
-        BUDGET.revenue -= +itemValue
-    } else if (listName === 'LISTA_DESPESAS') {
-        BUDGET.total += +itemValue;
-        BUDGET.expense -= +itemValue;
-    }
-    total_revenue.innerText = fixValue(BUDGET.revenue);
-    total_expense.innerText = fixValue(BUDGET.expense);
-    total.innerText = fixValue(BUDGET.total);
+function updateTotalValue(element, value) {
+    element.innerText = fixValue(Math.abs(value));
+    element.parentElement.setAttribute('title', toCurrency(Math.abs(value)))
 }
 
 function fixValue(value) {
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }).substring(3)
+    return value.toFixed(2)
 }
 
-function normalizeValue(value) {
-    return value.replaceAll('.', '').replace(',', '.')
+function toCurrency(value) {
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
 function alert(type, text) {
@@ -225,7 +215,8 @@ formDespesas.addEventListener('submit', (e) => {
 })
 
 function checkIfNumber(e) {
-    const regex = /\d|,/;
+
+    const regex = /\d|\./;
     const currentInputValue = e.currentTarget.value + e.key;
     const keysNotAllowed = [8, 37, 38, 39, 40];
 
@@ -233,15 +224,11 @@ function checkIfNumber(e) {
         return (!regex.test(e.key) && keysNotAllowed.every(key => e.keyCode !== key))
     }
 
-    function commaAlreadyExists() {
-        return currentInputValue.split(',').length - 1 > 1
+    function dotAlreadyExists() {
+        return currentInputValue.split('.').length - 1 > 1
     }
 
-    function isCommaFirstChar() {
-        return currentInputValue.indexOf(',') === 0
-    }
-
-    if (isKeyForbidden() || commaAlreadyExists() || isCommaFirstChar()) { e.preventDefault() }
+    if (isKeyForbidden() || dotAlreadyExists()) { e.preventDefault() }
 }
 
 
@@ -255,224 +242,3 @@ window.addEventListener('DOMContentLoaded', () => {
     loadStorageData(historicoReceitas)
     loadStorageData(historicoDespesas)
 })
-
-/*
-function setUpItens(funcao, ul) {
-    let itens = funcao
-    if (itens.length > 0) {
-        itens.forEach((i) => {
-            createLi(i.id, ul, i.valor, i.descricao)
-        })
-    }
-}
- */
-
-/*
-function addLocalStorage(id, valor, descricao, nomeLista, funcao) {
-    const item = { id, valor, descricao }
-    let lista = funcao
-    lista.push(item)
-    localStorage.setItem(nomeLista, JSON.stringify(lista))
-}*/
-
-/*
-const btnsAdd = document.querySelectorAll('.add')
-const btnsDeleteAll = document.querySelectorAll('.limpar')
-const valorTotal = document.querySelector('#valor-total')
-const totalRecebido = document.querySelector('#total-recebido')
-const totalGasto = document.querySelector('#total-gasto')
-const incomeHistory = document.querySelector('#income-history')
-const outcomeHistory = document.querySelector('#outcome-history')
-const inputNumeros = document.querySelectorAll('.input-valor')
-
-function adicionarValor(e) {
-    const parentDiv = e.target.parentElement
-    
-    const inputValor = parentDiv.querySelector('.input-valor')
-    const inputDescricao = parentDiv.querySelector('.descricao')
-
-    const inputValue = +inputValor.value
-    const descricaoValue = inputDescricao.value
-
-    if (inputValue !== 0) {
-            if (parentDiv.classList.contains('income-container')) {
-
-            const id = new Date().getTime()
-            if (inputValue !== 0) {
-            createLi(id, incomeHistory, inputValue, descricaoValue)  
-            }     
-            trocaValor(valorTotal, inputValue)
-            trocaValor(totalRecebido, inputValue)
-
-            addLocalStorage(id, inputValue, descricaoValue, 'listaIncome', getStorageIncome())
-            addLocalStorageDados()
-
-            } else {
-
-            const id = new Date().getTime()
-            if (inputValue !== 0) {
-            createLi(id, outcomeHistory, inputValue, descricaoValue)  
-            } 
-            trocaValor(totalGasto, inputValue)
-            trocaValor(valorTotal, -inputValue)
-
-            addLocalStorage(id, inputValue, descricaoValue, 'listaOutcome', getStorageOutcome())
-            addLocalStorageDados()
-
-            }
-    }
-}
-
-function createLi(id, d, p, s) {
-    if (s.trim() == '') s = 'Novo item'
-    const v = p.toFixed(2).replace('.',',')
-    const newLi = document.createElement('li')
-    newLi.classList.add('item-history')
-    newLi.id = id
-    newLi.innerHTML = `<p>${s.trim()}</p>
-                        <span class="valor">
-                            R$
-                            <span class="qt">${v}</span>
-                        </span>
-                        <button class="remover-item">Deletar item</button>`
-    d.appendChild(newLi)
-    const deleteBtn = newLi.querySelector('.remover-item')
-    deleteBtn.addEventListener('click', (e) => {
-        deleteItem(e, p)
-    })
-}
-
-function deleteItem(e, v) {
-    const ide = e.target.parentElement.id
-
-    if((e.target.parentElement.parentElement).id === 'income-history') {
-        trocaValor(valorTotal, -v)
-        trocaValor(totalRecebido, -v)
-       
-        deleteItemFromStorage(ide, getStorageIncome(), 'listaIncome')
-        addLocalStorageDados()
-
-    } else {
-        trocaValor(valorTotal, +v)
-        trocaValor(totalGasto, -v)
-
-        deleteItemFromStorage(ide, getStorageOutcome(), 'listaOutcome')
-        addLocalStorageDados()
-
-    }
-
-    e.target.parentElement.remove()
-}
-
-function trocaValor(v, i) {  
-    v.innerText = v.innerText.replace(',','.')
-    let t = +v.innerText + i
-    v.innerText = Number(t).toFixed(2)
-    v.innerText = v.innerText.replace('.',',')
-}
-
-function deletarTudo(e) {
-    const parentDiv = e.target.parentElement.parentElement
-    const allLi = parentDiv.querySelectorAll('li')
-    allLi.forEach((li) => {
-        const valorLi = li.querySelector('.qt').innerText.replace(',','.')
-
-        if (parentDiv.classList.contains('income-container')) {
-
-            trocaValor(valorTotal, -valorLi)
-            trocaValor(totalRecebido, -valorLi)
-            localStorage.removeItem('listaIncome')
-            addLocalStorageDados()
-           
-
-        } else {
-
-            trocaValor(valorTotal, +valorLi)
-            trocaValor(totalGasto, -valorLi)
-            localStorage.removeItem('listaOutcome')
-            addLocalStorageDados()
-
-        }
-        li.remove()
-    })
-
-}
-
-function addLocalStorage(id, valor, descricao, nomeLista, funcao) {
-    const item = { id, valor, descricao }
-    let lista = funcao
-    lista.push(item)
-    localStorage.setItem(nomeLista, JSON.stringify(lista))
-}
-
-function addLocalStorageDados() {
-    const item = { total: valorTotal.innerText, recebido: totalRecebido.innerText, gasto: totalGasto.innerText }
-    localStorage.setItem('Dados', JSON.stringify(item))
-}
-
-function deleteItemFromStorage(id, funcao, nomeLista) {
-
-    let items = funcao
-    
-    items = items.filter(function(item){
-        return item.id !== +id
-    })
-
-    localStorage.setItem(nomeLista, JSON.stringify(items))
-    if (items.length == 0) {
-        localStorage.removeItem(nomeLista)
-    }
-}
-
-function setUpItens(funcao, ul) {
-    let itens = funcao
-    if (itens.length > 0) {
-        itens.forEach((i) => {
-            createLi(i.id, ul, i.valor, i.descricao)
-        })
-    }
-}
-
-function setUpDados() {
-    let itens = getStorageDados()
-    if (itens.length !== 0) {
-        valorTotal.innerText = itens.total
-        totalRecebido.innerText = itens.recebido
-        totalGasto.innerText = itens.gasto
-    }
-}
-
-function getStorageIncome(){
-    return localStorage.getItem('listaIncome')?JSON.parse(localStorage.getItem('listaIncome')):[];
-}
-function getStorageOutcome(){
-    return localStorage.getItem('listaOutcome')?JSON.parse(localStorage.getItem('listaOutcome')):[];
-}
-function getStorageDados(){
-    return localStorage.getItem('Dados')?JSON.parse(localStorage.getItem('Dados')):[];
-}
-
-function preventKey(e) {
-    if (e.keyCode == 107 || e.keyCode == 109 || e.keyCode == 69) {
-        e.preventDefault()
-    }
-}
-
-btnsAdd.forEach((btn) => {
-    btn.addEventListener('click', adicionarValor)
-})
-
-btnsDeleteAll.forEach((btn) => {
-    btn.addEventListener('click', deletarTudo)
-})
-
-window.addEventListener('DOMContentLoaded', () => {
-    setUpItens(getStorageIncome(), incomeHistory)
-    setUpItens(getStorageOutcome(), outcomeHistory)
-    setUpDados()
-})
-
-inputNumeros.forEach((i) => {
-    i.addEventListener('keydown', preventKey)
-})
-*/

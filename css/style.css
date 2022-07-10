@@ -6,7 +6,12 @@
 
 :root {
     --padding: 3rem;
-    --transition: .2s
+    --transition: .2s;
+    --cor1: #85b0d3;
+    --cor2: #454068;
+    --cor3: rgba(69, 58, 102, 0.5);
+    --cor4: #afd6f7;
+    --cor5: rgba(120, 164, 189, 0.1);
 }
 
 a {
@@ -18,7 +23,7 @@ a {
 }
 
 h1 {
-    background: linear-gradient(90deg, #78bdb0 0%, #FFC4F2 100%);
+    background: linear-gradient(90deg, var(--cor1) 0%, #FFC4F2 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -56,7 +61,7 @@ label {
 body {
     font-family: 'Montserrat', sans-serif;
     color: white;
-    background: radial-gradient(60% 100% at 50% 0%, #576D81 0%, #3E3A59 100%);
+    background: radial-gradient(60% 100% at 50% 0%, #5d7892 0%, #454068 100%);
 
 }
 
@@ -106,7 +111,7 @@ li {
     padding: var(--padding);
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid rgba(49, 43, 69, 0.5);
+    border-bottom: 2px solid var(--cor3);
 }
 
 .itens {
@@ -144,15 +149,15 @@ li {
 
 .made-by a:hover {
     transition: var(--transition);
-    color: #bbfff2;
+    color: var(--cor4);
 }
 
 .btns:hover {
-    color: #96ddd0;
+    color: var(--cor4);
     transition: var(--transition);
-    background: rgba(120, 189, 176, 0.1);
-    box-shadow: 0 0 50px 0 rgba(62, 58, 89, 0.329);
-    border-color: #78bdb0;
+    background: var(--cor5);
+    box-shadow: 0 0 50px 0 rgba(62, 58, 89, 0.3);
+    border-color: var(--cor1);
 }
 
 .made-by a {
@@ -171,13 +176,13 @@ li {
 }
 
 .add_valor input {
-    border: 1px solid #78bdb0;
+    border: 1px solid var(--cor1);
     padding: 1rem;
     font-size: 1.1rem;
 }
 
 .add_valor input::placeholder {
-    color: #78bdb0;
+    color: var(--cor1);
     font-size: 0.9rem;
 }
 
@@ -194,7 +199,7 @@ li {
 }
 
 .historico_despesas {
-    border-top: 1px solid rgba(120, 189, 176, 0.3);
+    border-top: 2px solid var(--cor5);
     padding-top: 3rem;
 
 }
@@ -207,10 +212,10 @@ li {
 .add_btn {
     padding: 1rem 2.5rem;
     border-radius: 5px;
-    border: 1px solid #78bdb0;
+    border: 1px solid var(--cor1);
     margin-top: 1rem;
-    color: #78bdb0;
-    background: rgba(120, 189, 176, 0.1);
+    color: var(--cor1);
+    background: var(--cor5);
     transition: var(--transition);
     margin-left: auto;
 }
@@ -223,8 +228,8 @@ li {
 
 .btns:active,
 .add_btn:active {
-    color: #bbfff2;
-    background: rgba(165, 238, 225, 0.1);
+    color: var(--cor4);
+    background: var(--cor5);
     border-color: #a5eee1;
 }
 
@@ -252,7 +257,7 @@ li {
 }
 
 .historico input::placeholder {
-    color: #78bdb0;
+    color: var(--cor1);
 }
 
 .valor {
@@ -272,7 +277,7 @@ li {
 }
 
 .carteira {
-    border-left: 2px solid rgba(49, 43, 69, 0.5);
+    border-left: 2px solid var(--cor3);
     grid-row: 1 / -1;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -294,11 +299,11 @@ li {
 
 .total_recebido,
 .total_gasto {
-    border: 1px solid #78bdb0;
+    border: 1px solid var(--cor1);
     width: 100%;
     border-radius: 5px;
     padding: 2rem;
-    box-shadow: 0 0 50px 0 #3E3A59;
+    box-shadow: 0 0 50px 0 rgba(62, 58, 89, 0.3);
 }
 
 .carteira_valor {
@@ -308,7 +313,7 @@ li {
 
 .total .carteira_valor {
     font-size: 4rem;
-    background: linear-gradient(90deg, #78bdb0 0%, #FFC4F2 100%);
+    background: linear-gradient(90deg, var(--cor1) 0%, #FFC4F2 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -326,12 +331,12 @@ li {
 ::-webkit-scrollbar-thumb {
     background: transparent;
     border-radius: 4px;
-    border: 1px solid rgba(120, 189, 176, 0.3)
+    border: 1px solid var(--cor5)
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    border: 1px solid rgba(133, 217, 202, 1);
-    background: rgba(120, 189, 176, 0.1)
+    border: 1px solid var(--cor1);
+    background: var(--cor5)
 }
 
 .tooltip_container {
@@ -344,11 +349,11 @@ li {
     right: 1rem;
     top: 2.5rem;
     padding: .5rem 1rem;
-    border: 1px solid #78bdb0;
-    background: rgba(120, 189, 176, 0.2);
+    border: 1px solid var(--cor1);
+    background: var(--cor5);
     border-radius: 5px;
     width: max-content;
-    color: #96ddd0;
+    color: var(--cor4);
     animation: tooltip .3s forwards;
 }
 
@@ -364,7 +369,7 @@ li {
 
 .editing input {
     padding: .5rem;
-    border: 1px solid #78bdb0
+    border: 1px solid var(--cor1)
 }
 
 .alert {
@@ -452,7 +457,7 @@ input:focus::placeholder {
 }
 
 .remover-tudo:active {
-    color: #bbfff2
+    color: var(--cor4)
 }
 
 @media all and (max-width: 1150px) {
