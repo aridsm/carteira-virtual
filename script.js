@@ -1,9 +1,11 @@
-const sectionsItens = document.querySelectorAll('.section_itens');
+
 btnsSection = document.querySelectorAll('.btns');
 
 function changeSection(index) {
+    const sectionsItens = document.querySelectorAll('.section_itens');
     sectionsItens.forEach(item => item.classList.remove('ativo'))
     sectionsItens[index].classList.add('ativo');
+    console.log(sectionsItens)
 }
 
 btnsSection.forEach((item, index) => {
@@ -22,6 +24,7 @@ const total = document.querySelector('.total span')
 const total_revenue = document.querySelector('.total_recebido span')
 const total_expense = document.querySelector('.total_gasto span')
 const btnsRemoverTudo = document.querySelectorAll('.remover-tudo')
+const carteira = document.querySelector('.carteira')
 let timer;
 const BUDGET = {
     total: 0,
@@ -72,7 +75,9 @@ function getList(listName) {
 
 function editValues(input, listName, id) {
     let previousValue = input.getAttribute('data-value');
+    let value = input.value;
     if (input.dataset.category === 'value') {
+        value = +input.value
         if (listName === 'LISTA_RECEITAS') {
             calculateTotal(listName, -previousValue);
             calculateTotal(listName, input.value);
@@ -82,9 +87,10 @@ function editValues(input, listName, id) {
         }
     }
     function updateAttributes(...attrs) {
-        attrs.map(attr => input.setAttribute(attr, input.value))
+        attrs.map(attr => input.setAttribute(attr, value))
     }
-    input.setAttribute('title', toCurrency(+input.value))
+
+    input.setAttribute('title', toCurrency(value))
     updateAttributes('data-value', 'value');
     editFromLocalStorage(input, listName, id);
     alert('attention', 'Item editado!');
@@ -161,13 +167,13 @@ function calculateTotal(listName, itemValue) {
     }
 
     updateTotalValue(total, BUDGET.total);
-    updateTotalValue(total_expense, BUDGET.expense);
+    updateTotalValue(total_expense, Math.abs(BUDGET.expense));
     updateTotalValue(total_revenue, BUDGET.revenue);
 }
 
 function updateTotalValue(element, value) {
-    element.innerText = fixValue(Math.abs(value));
-    element.parentElement.setAttribute('title', toCurrency(Math.abs(value)))
+    element.innerText = fixValue(value);
+    element.parentElement.setAttribute('title', toCurrency(+element.innerText))
 }
 
 function fixValue(value) {
@@ -206,14 +212,6 @@ function removeAll(e) {
         alert('bad', 'A lista foi esvaziada.');
     }
 }
-
-formReceitas.addEventListener('submit', (e) => {
-    saveValue(historicoReceitas, e)
-})
-formDespesas.addEventListener('submit', (e) => {
-    saveValue(historicoDespesas, e)
-})
-
 function checkIfNumber(e) {
 
     const regex = /\d|\./;
@@ -231,6 +229,12 @@ function checkIfNumber(e) {
     if (isKeyForbidden() || dotAlreadyExists()) { e.preventDefault() }
 }
 
+formReceitas.addEventListener('submit', (e) => {
+    saveValue(historicoReceitas, e)
+})
+formDespesas.addEventListener('submit', (e) => {
+    saveValue(historicoDespesas, e)
+})
 
 inputsNumber.forEach(input => {
     input.addEventListener('keydown', checkIfNumber)
@@ -242,3 +246,14 @@ window.addEventListener('DOMContentLoaded', () => {
     loadStorageData(historicoReceitas)
     loadStorageData(historicoDespesas)
 })
+
+function addClass() {
+    if (window.innerWidth <= 990) {
+        carteira.classList.add('section_itens')
+    } else {
+        carteira.classList.remove('section_itens');
+
+    }
+}
+addClass()
+window.addEventListener('resize', addClass)

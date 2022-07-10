@@ -5,7 +5,6 @@
 }
 
 :root {
-    --padding: 3rem;
     --transition: .2s;
     --cor1: #85b0d3;
     --cor2: #454068;
@@ -72,6 +71,10 @@ li {
     align-items: center;
 }
 
+#btn-carteira {
+    display: none;
+}
+
 .carteira-container {
     min-width: 100vw;
     min-height: 100vh;
@@ -108,14 +111,14 @@ li {
     grid-row: 1;
     height: 100%;
     display: flex;
-    padding: var(--padding);
-    justify-content: space-between;
+    padding: 3rem;
     align-items: center;
+    justify-content: space-between;
     border-bottom: 2px solid var(--cor3);
 }
 
 .itens {
-    padding: var(--padding);
+    padding: 3rem;
     grid-column: 1;
     grid-row: 2;
     overflow: auto;
@@ -124,7 +127,7 @@ li {
 
 .btns_container {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     margin-bottom: 5rem;
 }
 
@@ -134,13 +137,15 @@ li {
     align-items: center;
     max-width: 50%;
     border: 1px solid transparent;
-    padding: 1rem;
+    padding: .8rem;
     border-radius: 5px;
 
 }
 
 .btns svg {
     margin-right: 1rem;
+    min-width: 25px;
+    max-width: 25px;
 }
 
 .made-by {
@@ -157,7 +162,13 @@ li {
     transition: var(--transition);
     background: var(--cor5);
     box-shadow: 0 0 50px 0 rgba(62, 58, 89, 0.3);
-    border-color: var(--cor1);
+    border-color: var(--cor4);
+}
+
+.btns:active {
+    color: white;
+    border-color: white;
+    background-color: rgb(255, 255, 255, 0.1);
 }
 
 .made-by a {
@@ -226,11 +237,10 @@ li {
     color: white
 }
 
-.btns:active,
 .add_btn:active {
     color: var(--cor4);
     background: var(--cor5);
-    border-color: #a5eee1;
+    border-color: var(--cor4);
 }
 
 .title {
@@ -302,13 +312,17 @@ li {
     border: 1px solid var(--cor1);
     width: 100%;
     border-radius: 5px;
-    padding: 2rem;
+    padding: 2rem 1rem;
     box-shadow: 0 0 50px 0 rgba(62, 58, 89, 0.3);
 }
 
 .carteira_valor {
     font-weight: bold;
     font-size: 1.4rem;
+    display: flex;
+    justify-content: flex-start;
+    overflow: hidden;
+    border: 1px solid red;
 }
 
 .total .carteira_valor {
@@ -318,6 +332,17 @@ li {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
+    max-width: 30rem;
+}
+
+.total_gasto .carteira_valor,
+.total_recebido .carteira_valor {
+    width: 100%;
+    max-width: 10rem;
+}
+
+.carteira_valor span {
+    margin-left: .5rem;
 }
 
 ::-webkit-scrollbar {
@@ -422,6 +447,10 @@ li {
     animation: tooltip .3s forwards;
 }
 
+.carteira.ativo {
+    display: grid;
+}
+
 input:hover,
 input:focus {
     border-color: white;
@@ -474,9 +503,33 @@ input:focus::placeholder {
 }
 
 @media all and (max-width: 990px) {
+
     .header {
         flex-direction: column;
         justify-content: center;
+    }
+
+    .btns svg {
+        margin: 0 auto
+    }
+
+    .btns_container {
+        justify-content: center;
+    }
+
+    .btns {
+        flex-direction: column;
+        font-size: 0.8rem;
+        text-align: center;
+        width: 25%
+    }
+
+    .btns p {
+        margin-top: 1rem;
+    }
+
+    #btn-carteira {
+        display: flex;
     }
 
     .made-by {
@@ -495,5 +548,33 @@ input:focus::placeholder {
     .carteira {
         grid-column: 1;
         display: none;
+        margin-top: 44vh;
+        height: 100%;
+        place-items: start center
+    }
+}
+
+@media all and (max-width: 770px) {
+    .btns {
+        flex-direction: column;
+        font-size: 0.8rem;
+        text-align: center;
+        width: 25%;
+        flex: 1
+    }
+
+    .header,
+    .itens {
+        padding: 1.5rem
+    }
+}
+
+@media all and (max-width: 520px) {
+    .btns p {
+        display: none;
+    }
+
+    .btns {
+        margin-top: 1rem;
     }
 }
