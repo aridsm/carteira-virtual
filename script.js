@@ -6,7 +6,6 @@ function changeSection(index) {
     const sectionsItens = document.querySelectorAll('.section_itens');
     sectionsItens.forEach(item => item.classList.remove('ativo'))
     sectionsItens[index].classList.add('ativo');
-    console.log(sectionsItens)
 }
 
 btnsSection.forEach((item, index) => {
