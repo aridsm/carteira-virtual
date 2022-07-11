@@ -1,5 +1,6 @@
 
-btnsSection = document.querySelectorAll('.btns');
+const btnsSection = document.querySelectorAll('.btns');
+const carteira = document.querySelector('.carteira')
 
 function changeSection(index) {
     const sectionsItens = document.querySelectorAll('.section_itens');
@@ -14,6 +15,17 @@ btnsSection.forEach((item, index) => {
     })
 })
 
+function addClass() {
+    if (window.innerWidth <= 990) {
+        carteira.classList.add('section_itens')
+    } else {
+        carteira.classList.remove('section_itens');
+        changeSection(0)
+    }
+}
+addClass()
+window.addEventListener('resize', addClass)
+
 const formDespesas = document.querySelector('.add_valor_despesas')
 const formReceitas = document.querySelector('.add_valor_receitas')
 const historicoReceitas = document.querySelector('.lista-receitas')
@@ -24,7 +36,8 @@ const total = document.querySelector('.total span')
 const total_revenue = document.querySelector('.total_recebido span')
 const total_expense = document.querySelector('.total_gasto span')
 const btnsRemoverTudo = document.querySelectorAll('.remover-tudo')
-const carteira = document.querySelector('.carteira')
+const LISTA_DESPESAS = 'LISTA_DESPESAS'
+const LISTA_RECEITAS = 'LISTA_RECEITAS'
 let timer;
 const BUDGET = {
     total: 0,
@@ -34,7 +47,7 @@ const BUDGET = {
 
 function saveValue(list, e) {
     e.preventDefault();
-    const inputMoney = e.currentTarget.querySelector('.input-valor').value.replace(',', '.');
+    const inputMoney = e.currentTarget.querySelector('.input-valor').value;
     const inputDescription = e.currentTarget.querySelector('.descricao').value || 'Novo item';
     if (inputMoney) {
         const LIST_ID = list.dataset.list;
@@ -51,7 +64,6 @@ function saveValue(list, e) {
     } else {
         alert('attention', 'Insira um valor.');
     }
-
 }
 
 function saveToLocalStorage(item, listName) {
@@ -78,7 +90,7 @@ function editValues(input, listName, id) {
     let value = input.value;
     if (input.dataset.category === 'value') {
         value = +input.value
-        if (listName === 'LISTA_RECEITAS') {
+        if (listName === LISTA_RECEITAS) {
             calculateTotal(listName, -previousValue);
             calculateTotal(listName, input.value);
         } else {
@@ -108,7 +120,7 @@ function removeItem(li, listName) {
     const inputValue = li.querySelector(`#value-${id}`).value;
     removeFromLocalStorage(id, listName);
     alert('bad', `Item "${inputDescription}" removido`);
-    listName === 'LISTA_RECEITAS' ? calculateTotal(listName, -inputValue) : calculateTotal(listName, inputValue);
+    listName === LISTA_RECEITAS ? calculateTotal(listName, -inputValue) : calculateTotal(listName, inputValue);
 }
 
 function removeFromLocalStorage(id, listName) {
@@ -153,15 +165,15 @@ function createItem(item, list, listName) {
         input.addEventListener('change', (e) => editValues(e.currentTarget, listName, item.id));
     })
     inputValor.addEventListener('keydown', checkIfNumber);
-    listName === 'LISTA_RECEITAS' ? calculateTotal(listName, item.value) : calculateTotal(listName, -item.value)
+    listName === LISTA_RECEITAS ? calculateTotal(listName, item.value) : calculateTotal(listName, -item.value)
 }
 
 function calculateTotal(listName, itemValue) {
     let value = Number(itemValue);
-    if (listName === 'LISTA_RECEITAS') {
+    if (listName === LISTA_RECEITAS) {
         BUDGET.total = BUDGET.total + value
         BUDGET.revenue = BUDGET.revenue + value
-    } else if (listName === 'LISTA_DESPESAS') {
+    } else if (listName === LISTA_DESPESAS) {
         BUDGET.total = BUDGET.total + value
         BUDGET.expense = BUDGET.expense + value
     }
@@ -246,14 +258,3 @@ window.addEventListener('DOMContentLoaded', () => {
     loadStorageData(historicoReceitas)
     loadStorageData(historicoDespesas)
 })
-
-function addClass() {
-    if (window.innerWidth <= 990) {
-        carteira.classList.add('section_itens')
-    } else {
-        carteira.classList.remove('section_itens');
-
-    }
-}
-addClass()
-window.addEventListener('resize', addClass)
