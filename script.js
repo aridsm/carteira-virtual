@@ -142,7 +142,7 @@ function createItem(item, list, listName) {
 <div class="valor">
     <label for="value-${item.id}">Descriçao do item</label>
     <span>R$</span>
-    <input type="text" inputmode=”numeric” name='historico-income-valor' id="value-${item.id}" data-value="${item.value}" title='${toCurrency(+item.value)}' data-category='value' autocomplete='off' value="${fixValue(+item.value)}" />
+    <input type="text" inputmode="numeric" name='historico-income-valor' id="value-${item.id}" data-value="${item.value}" title='${toCurrency(+item.value)}' data-category='value' autocomplete='off' value="${fixValue(+item.value)}" />
 </div>
 
 <div class="tooltip_container">

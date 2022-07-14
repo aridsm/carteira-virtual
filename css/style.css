@@ -9,7 +9,7 @@
     --cor1: #85b0d3;
     --cor2: #454068;
     --cor3: rgba(69, 58, 102, 0.5);
-    --cor4: #afd6f7;
+    --cor4: #b9e0ff;
     --cor5: rgba(120, 164, 189, 0.1);
 }
 
@@ -22,11 +22,7 @@ a {
 }
 
 h1 {
-    background: linear-gradient(90deg, var(--cor1) 0%, #FFC4F2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
+    color: var(--cor4)
 }
 
 button {
@@ -61,7 +57,6 @@ body {
     font-family: 'Montserrat', sans-serif;
     color: white;
     background: radial-gradient(60% 100% at 50% 0%, #5d7892 0%, #454068 100%);
-
 }
 
 li {
@@ -216,8 +211,8 @@ li {
     display: inline-block;
     margin-top: 5px;
     position: relative;
-    width: 45px;
-    height: 30px;
+    min-width: 25px;
+    min-height: 30px;
     background-size: contain;
     background-repeat: no-repeat;
     margin-right: .2rem;
@@ -272,7 +267,6 @@ li {
 }
 
 .historico input {
-    margin-right: 3rem;
     border: 1px solid transparent;
     padding: 0.5rem
 }
@@ -289,7 +283,6 @@ li {
 }
 
 .valor input {
-    margin-left: .5rem;
     min-width: 6rem;
 }
 
@@ -301,15 +294,14 @@ li {
     border-left: 2px solid var(--cor3);
     width: 50vw;
     height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 3rem;
-    place-items: center;
     text-align: center;
     position: absolute;
     top: 0;
     right: 0;
-    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .carteira .title {
@@ -317,18 +309,13 @@ li {
     font-size: 1rem;
 }
 
-.total {
-    grid-column: 1 / -1;
-    margin-bottom: -20rem;
-}
-
 .total_recebido,
 .total_gasto {
-    border: 1px solid var(--cor1);
-    width: 90%;
     border-radius: 5px;
     padding: 2rem 1rem;
     box-shadow: 0 0 50px 0 rgba(62, 58, 89, 0.3);
+    border: 1px solid var(--cor1);
+    width: 12rem
 }
 
 .carteira_valor {
@@ -343,11 +330,7 @@ li {
 
 .total .carteira_valor {
     font-size: 4rem;
-    background: linear-gradient(90deg, var(--cor1) 0%, #FFC4F2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
+    color: var(--cor4);
     max-width: 30rem;
 }
 
@@ -355,6 +338,15 @@ li {
 .total_recebido .carteira_valor {
     width: 100%;
     max-width: 10rem;
+}
+
+.total_gasto {
+    margin-left: 2rem;
+}
+
+.totais_recebido_gasto {
+    display: flex;
+    margin-top: 2rem;
 }
 
 .carteira_valor span {
@@ -440,7 +432,6 @@ input:focus::placeholder {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-
 }
 
 .remover-tudo {
@@ -542,6 +533,36 @@ input:focus::placeholder {
 
     .btns {
         margin-top: 1rem;
+    }
+}
+
+@media all and (max-width: 470px) {
+    .totais_recebido_gasto {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 4rem;
+    }
+
+    .total .carteira_valor {
+        font-size: 2.5rem;
+    }
+
+    .total_gasto {
+        margin-left: 0;
+        margin-top: 2rem;
+    }
+
+    .historico_despesas li::before,
+    .historico_receitas li::before {
+        min-width: 20px;
+    }
+
+    .title {
+        font-size: 1rem;
+    }
+
+    .itens {
+        padding: 1.2rem
     }
 }
 
