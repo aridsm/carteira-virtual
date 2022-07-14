@@ -373,6 +373,7 @@ li {
     font-size: 1rem;
     display: none;
     animation: alert .2s forwards;
+    z-index: 99999;
 }
 
 @keyframes alert {
@@ -382,8 +383,8 @@ li {
 }
 
 .alert[data-type='bad'] {
-    color: rgb(255, 149, 149);
-    background: rgba(255, 106, 106, 0.1);
+    color: rgb(255, 175, 175);
+    background: rgba(255, 106, 106, 0.08);
 }
 
 .alert[data-type='attention'] {
