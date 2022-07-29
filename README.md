@@ -9,4 +9,4 @@ Projeto feito com JavaScript, HTML e CSS.
 link: https://aridsm.github.io/carteira-virtual/
 
 
-![imagem da página](https://github.com/aridsm/carteira-virtual/blob/master/page.png)
+![imagem da página](https://github.com/aridsm/carteira-virtual/blob/master/page.gif)
